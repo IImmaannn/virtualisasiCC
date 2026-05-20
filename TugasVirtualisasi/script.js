@@ -2,6 +2,30 @@ const canvas = document.getElementById("tetris");
 const context = canvas.getContext("2d");
 context.scale(20, 20);
 
+// Sistem Simpan Nama & Skor
+let username = prompt("Masukkan Username Anda untuk Database Cloud:") || "Guest_" + Math.floor(Math.random() * 1000);
+document.getElementById("current-user").innerText = username;
+
+function saveHighScore(finalScore) {
+    if (finalScore <= 0) return;
+    let scores = JSON.parse(localStorage.getItem("tetris_cloud_scores")) || [];
+    scores.push({ name: username, score: finalScore });
+    scores.sort((a, b) => b.score - a.score);
+    scores = scores.slice(0, 5); // Ambil top 5
+    localStorage.setItem("tetris_cloud_scores", JSON.stringify(scores));
+    displayLeaderboard();
+}
+
+function displayLeaderboard() {
+    let scores = JSON.parse(localStorage.getItem("tetris_cloud_scores")) || [];
+    const list = document.getElementById("score-list");
+    if (scores.length === 0) {
+        list.innerHTML = "<li>Belum ada data</li>";
+        return;
+    }
+    list.innerHTML = scores.map(s => `<li><strong>${s.name}</strong>: ${s.score}</li>`).join("");
+}
+
 function arenaSweep() {
     let rowCount = 1;
     outer: for (let y = arena.length - 1; y > 0; --y) {
@@ -102,6 +126,7 @@ function playerReset() {
     player.pos.y = 0;
     player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
     if (collide(arena, player)) {
+        saveHighScore(player.score);
         arena.forEach(row => row.fill(0));
         player.score = 0;
         updateScore();
@@ -148,6 +173,7 @@ document.addEventListener("keydown", event => {
 
 const arena = createMatrix(12, 20);
 const player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
+displayLeaderboard();
 playerReset();
 updateScore();
 update();

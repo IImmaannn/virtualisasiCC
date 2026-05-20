@@ -8,8 +8,24 @@
 </head>
 <body>
     <h3>Tetris</h3>
+    
+    <div class="player-bar">
+        PLAYER: <span id="current-user">-</span>
+    </div>
+
     <div id="score">SKOR: 0</div>
-    <canvas id="tetris" width="240" height="400"></canvas>
+    
+    <div class="game-container">
+        <canvas id="tetris" width="240" height="400"></canvas>
+        
+        <div class="leaderboard">
+            <h4>TOP 5 HIGH SCORE</h4>
+            <ol id="score-list">
+                <li>Belum ada data</li>
+            </ol>
+        </div>
+    </div>
+
     <div class="info">Gunakan tombol arah Panah Kiri / Kanan untuk geser, Panah Atas untuk putar, dan Panah Bawah untuk turun cepat.</div>
 
     <script src="script.js"></script>
